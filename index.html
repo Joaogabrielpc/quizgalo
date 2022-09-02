@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesquisa</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1 id="a1">Atlético Mineiro</h1>
+
+    <p id="quiz">Quiz do Galo</p>
+    <form name="submit-to-google-sheet">
+<!-- comeco do quiz -->
+<div id="div">
+    <p id="z1">Quantas vezes o Galo foi Campeão Mineiro ?</p>
+    <select  id="Mineiro" name="Mineiro">
+        <option value="Errado">46</option>
+        <option value="Certo">47</option>
+        <option value="Errado ">48</option>
+        <option value="Errado">49</option>
+    </select>
+
+<p id="z2">Quantas vezes o Galo foi Campeão Brasileiro ?</p>
+<select id="Brasileiro" name="Brasileiro">
+    <option value="Errado">1</option>
+    <option value="Certo">2</option>
+    <option value="Errado ">3</option>
+    <option value="Errado">4</option>
+</select>
+
+<p id="z3">Qual é o maior rival do Galo ?</p>
+<select id="Rival" name="Rival">
+    <option value="Errado">América</option>
+    <option value="Errado">Vilanova</option>
+    <option value="Certo ">Cruzeiro</option>
+    <option value="Errado">Tombense</option>
+</select>
+
+<p id="z4">Qual foi o último titúlo conquistado pelo Galo ?</p>
+<select id="Titúlo" name="Titúlo">
+    <option value="Errado">Brasileiro</option>
+    <option value="Errado">Copa do Brasil</option>
+    <option value="Errado">Mineiro</option>
+    <option value="Certo">Super Copa</option>
+</select>
+
+<p id="z5">Quantas vezes o Galo foi Campeão da Libertadores ?</p>
+<select id="Libertadores" name="Libertadores">
+    <option value="Certo">1</option>
+    <option value="Errado">2</option>
+    <option value="Errado">3</option>
+    <option value="Errado">4</option>
+</select>
+</div>
+
+<h1 id="a2">FIM DO QUIZ</h1>
+<h2>Responda as perguntas para participar de um sorteio</h2>
+<h3>Prêmio:Camisa autografáda por toda a equipe</h3>
+<!-- sorteio -->
+<p>Você já foi no Mineirão</p>
+<input name="estadio" type="radio" value="sim" id="estadio">
+<label name="estadio" for="estadio">Sim</label>
+<br>
+<input name="estadio" type="radio" value="nao" id="estadio">
+<label name="estadio" for="estadio">
+Não
+</label>
+
+<p>Você já e sócio torcedor</p>
+<input name="sócio" type="radio" value="sim" id="sócio">
+<label name="sócio" for="sócio">Sim</label>
+<br>
+<input name="sócio" type="radio" value="nao" id="sócio">
+<label name="sócio" for="sócio">
+Não
+</label>
+
+<p>Você visitou a loja do Galo</p>
+<input name="loja" type="radio" value="sim" id="sólojacio">
+<label name="loja" for="loja">Sim</label>
+<br>
+<input name="loja" type="radio" value="nao" id="loja">
+<label name="loja" for="loja">
+Não
+</label>
+
+<p>Quantas vezes você foi a o Mineirão</p>
+<input name="vezes" type="checkbox" id="inlineCheckbox1" value="1a3">
+<label name="vezes" for="inlineCheckbox1">1 a 3 vezes</label>
+<input name="vezes" type="checkbox" id="inlineCheckbox1" value="3a10">
+<label name="vezes" for="inlineCheckbox1">3 a 10 vezes</label>
+<input name="vezes" type="checkbox" id="inlineCheckbox1" value=">10">
+<label name="vezes" for="inlineCheckbox1">Acima de 10</label>
+
+<h2>Preencha os dados para enviamos seu resultado</h2>
+<!-- resultado -->
+<p><input name="nome" type="text" placeholder="Nome" required></p>
+<input name="Email" type="email" placeholder="Email">
+    <br><br>
+<button type="submit">Enviar</button>
+
+
+
+</form>
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxOdd9EwM_BYs-0fzswz_j83ZiS5gd6wnJ-d4HqUybGEMOCbykiL8CgB9FA7hIcQB0o4A/exec'
+        const form = document.forms['submit-to-google-sheet']
+
+        form.addEventListener('submit', e => {
+            e.preventDefault()
+            fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+             .then(response => console.log('Success!', response))
+             .catch(error => console.error('Error!', error. message))
+            form.reset();
+        })
+    </script>
+<!--
+    var sheetName = 'sheet3'
+var scriptProp = PropertiesService.getScriptProperties()
+
+function intialSetup () {
+    var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet()
+    scriptProp.setProperty('key', activeSpreadsheet.getId())
+}
+
+function doPost (e) {
+    var lock = LockService.getScriptLock()
+    lock.tryLock(10000)
+
+    try{
+        var doc = SpreadsheetApp.openById(scriptProp.getProperty('key'))
+        var sheet = doc.getSheetByName(sheetName)
+
+        var headers = sheet.getRange(1, 1, 1,sheet.getLastColumn()).getValues()[0]
+        var nextRow = sheet.getLastRow() + 1
+
+        var newRow = headers.map(function(header) {
+            return header === 'timestamp' ? new Date() : e.parameter[header]
+        })
+        
+        sheet.getRange(nextRow, 1, 1, newRow.length).setValues([newRow])
+
+        return ContentService
+          .createTextOutput(JSON.stringify({ 'result': 'success', 'row': nextRow }))
+          .setMimeType(ContentService.MimeType.JSON)
+    }
+
+    catch (e) {
+        return ContentService
+          .createTextOutput(JSON.stringify({ 'result': 'error', 'error': e }))
+          .setMimeType(ContentService.MimeType.JSON)
+    }
+
+    finally{
+        lock.releaseLock()
+    }
+}
+-->
+</body>
+</html>
